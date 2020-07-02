@@ -19,19 +19,11 @@ rm -rf /var/lib/etcd/
 
 
 
-ip link delete cni0
-
-ip link delete flannel.1
-
-
-
-yum remove -y kubelet
-
-yum remove -y kubectl
-
-yum remove -y kubeadm
-
-
+#ip link delete cni0
+#ip link delete flannel.1
+#yum remove -y kubelet
+#yum remove -y kubectl
+#yum remove -y kubeadm
 
 systemctl start docker
 
