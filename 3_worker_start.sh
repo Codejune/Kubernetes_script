@@ -10,6 +10,9 @@ kubeadm join 192.168.56.100:6443 --token 1ckgu8.qd6vpx3z1wg7fj81 --discovery-tok
 # if token is expire
 #kubeadm token create
 
+# add this line under Environment line /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+#Environment="KUBELET_EXTRA_ARGS=--node-ip=192.168.56.102"
+
 # confirm
 kubectl get nodes
 
