@@ -8,7 +8,9 @@ sudo echo 1 > /proc/sys/net/ipv4/ip_forward
 #iptables -A FORWARD -i enp3s0 -j ACCEPT
 
 # init pod network & set api-server address
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=192.168.56.101
+echo -n "마스터 노드 IP: "
+read masterip
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=$masterip
 #sudo kubeadm init --pod-network-cidr 192.168.0.0/16
 
 # save config

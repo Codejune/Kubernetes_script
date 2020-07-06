@@ -53,7 +53,10 @@ cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 sudo apt-get update
-sudo apt-get install -y kubelet kubeadm kubectl
+echo -n "설치하려는 k8s 버전: "
+read kubeversion
+
+sudo apt-get install -y kubelet=$kubeversion-00 kubeadm=$kubeversion-00 kubectl=$kubeversion-00
 sudo apt-mark hold kubelet kubeadm kubectl
 
 # check kube version
