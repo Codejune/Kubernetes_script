@@ -1,0 +1,3 @@
+# Note: This dropin only works with kubeadm and kubelet v1.11+
+[Service]
+ExecStart=/usr/bin/checkpoint-collector

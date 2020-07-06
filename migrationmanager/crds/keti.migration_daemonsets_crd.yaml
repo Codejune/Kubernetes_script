@@ -1,0 +1,230 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: daemonsets.keti.migration
+spec:
+  group: keti.migration
+  names:
+    kind: DaemonSet
+    listKind: DaemonSetList
+    plural: daemonsets
+    singular: daemonset
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      description: DaemonSet represents the configuration of a daemon set.
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
+          type: object
+        spec:
+          description: 'The desired behavior of this daemon set. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
+          properties:
+            minReadySeconds:
+              description: The minimum number of seconds for which a newly created
+                DaemonSet pod should be ready without any of its container crashing,
+                for it to be considered available. Defaults to 0 (pod will be considered
+                available as soon as it is ready).
+              format: int32
+              type: integer
+            revisionHistoryLimit:
+              description: The number of old history to retain to allow rollback.
+                This is a pointer to distinguish between explicit zero and not specified.
+                Defaults to 10.
+              format: int32
+              type: integer
+            selector:
+              description: 'A label query over pods that are managed by the daemon
+                set. Must match in order to be controlled. It must match the pod template''s
+                labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors'
+              properties:
+                matchExpressions:
+                  description: matchExpressions is a list of label selector requirements.
+                    The requirements are ANDed.
+                  items:
+                    description: A label selector requirement is a selector that contains
+                      values, a key, and an operator that relates the key and values.
+                    properties:
+                      key:
+                        description: key is the label key that the selector applies
+                          to.
+                        type: string
+                      operator:
+                        description: operator represents a key's relationship to a
+                          set of values. Valid operators are In, NotIn, Exists and
+                          DoesNotExist.
+                        type: string
+                      values:
+                        description: values is an array of string values. If the operator
+                          is In or NotIn, the values array must be non-empty. If the
+                          operator is Exists or DoesNotExist, the values array must
+                          be empty. This array is replaced during a strategic merge
+                          patch.
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - key
+                    - operator
+                    type: object
+                  type: array
+                matchLabels:
+                  additionalProperties:
+                    type: string
+                  description: matchLabels is a map of {key,value} pairs. A single
+                    {key,value} in the matchLabels map is equivalent to an element
+                    of matchExpressions, whose key field is "key", the operator is
+                    "In", and the values array contains only "value". The requirements
+                    are ANDed.
+                  type: object
+              type: object
+              #template:
+              #$ref: '#/definitions/k8s.io~1api~1core~1v1~0PodTemplateSpec'
+              #description: 'An object that describes the pod that will be created.
+              #         The DaemonSet will create exactly one copy of this pod on every node
+              #          that matches the template''s node selector (or on every node if no
+              #          node selector is specified). More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template'
+            updateStrategy:
+              description: An update strategy to replace existing DaemonSet pods with
+                new pods.
+              properties:
+                rollingUpdate:
+                  description: 'Rolling update config params. Present only if type
+                    = "RollingUpdate". --- TODO: Update this to follow our convention
+                    for oneOf, whatever we decide it to be. Same as Deployment `strategy.rollingUpdate`.
+                    See https://github.com/kubernetes/kubernetes/issues/35345'
+                  properties:
+                    maxUnavailable:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      description: 'The maximum number of DaemonSet pods that can
+                        be unavailable during the update. Value can be an absolute
+                        number (ex: 5) or a percentage of total number of DaemonSet
+                        pods at the start of the update (ex: 10%). Absolute number
+                        is calculated from percentage by rounding up. This cannot
+                        be 0. Default value is 1. Example: when this is set to 30%,
+                        at most 30% of the total number of nodes that should be running
+                        the daemon pod (i.e. status.desiredNumberScheduled) can have
+                        their pods stopped for an update at any given time. The update
+                        starts by stopping at most 30% of those DaemonSet pods and
+                        then brings up new DaemonSet pods in their place. Once the
+                        new pods are available, it then proceeds onto other DaemonSet
+                        pods, thus ensuring that at least 70% of original number of
+                        DaemonSet pods are available at all times during the update.'
+                      x-kubernetes-int-or-string: true
+                  type: object
+                type:
+                  description: Type of daemon set update. Can be "RollingUpdate" or
+                    "OnDelete". Default is RollingUpdate.
+                  type: string
+              type: object
+          required:
+          - selector
+          - template
+          type: object
+        status:
+          description: 'The current status of this daemon set. This data may be out
+            of date by some window of time. Populated by the system. Read-only. More
+            info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
+          properties:
+            collisionCount:
+              description: Count of hash collisions for the DaemonSet. The DaemonSet
+                controller uses this field as a collision avoidance mechanism when
+                it needs to create the name for the newest ControllerRevision.
+              format: int32
+              type: integer
+            conditions:
+              description: Represents the latest available observations of a DaemonSet's
+                current state.
+              items:
+                description: DaemonSetCondition describes the state of a DaemonSet
+                  at a certain point.
+                properties:
+                  lastTransitionTime:
+                    description: Last time the condition transitioned from one status
+                      to another.
+                    format: date-time
+                    type: string
+                  message:
+                    description: A human readable message indicating details about
+                      the transition.
+                    type: string
+                  reason:
+                    description: The reason for the condition's last transition.
+                    type: string
+                  status:
+                    description: Status of the condition, one of True, False, Unknown.
+                    type: string
+                  type:
+                    description: Type of DaemonSet condition.
+                    type: string
+                required:
+                - status
+                - type
+                type: object
+              type: array
+            currentNumberScheduled:
+              description: 'The number of nodes that are running at least 1 daemon
+                pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/'
+              format: int32
+              type: integer
+            desiredNumberScheduled:
+              description: 'The total number of nodes that should be running the daemon
+                pod (including nodes correctly running the daemon pod). More info:
+                https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/'
+              format: int32
+              type: integer
+            numberAvailable:
+              description: The number of nodes that should be running the daemon pod
+                and have one or more of the daemon pod running and available (ready
+                for at least spec.minReadySeconds)
+              format: int32
+              type: integer
+            numberMisscheduled:
+              description: 'The number of nodes that are running the daemon pod, but
+                are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/'
+              format: int32
+              type: integer
+            numberReady:
+              description: The number of nodes that should be running the daemon pod
+                and have one or more of the daemon pod running and ready.
+              format: int32
+              type: integer
+            numberUnavailable:
+              description: The number of nodes that should be running the daemon pod
+                and have none of the daemon pod running and available (ready for at
+                least spec.minReadySeconds)
+              format: int32
+              type: integer
+            observedGeneration:
+              description: The most recent generation observed by the daemon set controller.
+              format: int64
+              type: integer
+            updatedNumberScheduled:
+              description: The total number of nodes that are running updated daemon
+                pod
+              format: int32
+              type: integer
+          required:
+          - currentNumberScheduled
+          - desiredNumberScheduled
+          - numberMisscheduled
+          - numberReady
+          type: object
+      type: object
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true
