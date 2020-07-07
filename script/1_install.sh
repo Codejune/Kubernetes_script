@@ -79,9 +79,9 @@ printf " 2. Currently\n"
 printf " > "
 read selection
 
-if [ "${selection}" -eq 1 ];then
+if [ ${selection} == 1 ];then
 	sudo apt-get install -y kubelet=1.17.3-00 kubeadm=1.17.3-00 kubectl=1.17.3-00 
-elif [ "${selection}" -eq 1 ];then
+elif [ ${selection} == 2 ];then
 	sudo apt-get install -y kubelet kubeadm kubectl 
 else
 	printf " Invalid selection\n"
