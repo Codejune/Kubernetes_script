@@ -18,15 +18,15 @@ swapoff -a
 
 # package manage tool update
 printf " Package manage tool updating...\n"
-sudo apt update > /dev/null
+sudo apt update 
 
 # prev docker version remove
 printf " Remove previous docker installation...\n"
-sudo apt-get -y remove docker docker-engine docker.io > /dev/null
+sudo apt-get -y remove docker docker-engine docker.io 
 
 # docker support library install
 printf " Install docker support library...\n"
-sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y > /dev/null
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y 
 
 # get gpg key
 printf " Add docker gpg key...\n"
@@ -38,11 +38,11 @@ sudo apt-key fingerprint 0EBFCD88
 # add docker download link to /etc/apt/source.list
 printf " Add docker package download link in sources.list...\n"
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt update > /dev/null
+sudo apt update 
 
 # install docker validate version ~v18.09
 printf " Installing docker...\n"
-sudo apt-get install docker-ce=18.06.2~ce~3-0~ubuntu -y > /dev/null
+sudo apt-get install docker-ce=18.06.2~ce~3-0~ubuntu -y
 
 # change docker daemon driver
 printf " Change docker daemon driver...\n"
@@ -80,9 +80,9 @@ printf " > "
 read selection
 
 if [ "${selection}" -eq 1 ];then
-	sudo apt-get install -y kubelet=1.17.3-00 kubeadm=1.17.3-00 kubectl=1.17.3-00 > /dev/null
+	sudo apt-get install -y kubelet=1.17.3-00 kubeadm=1.17.3-00 kubectl=1.17.3-00 
 elif [ "${selection}" -eq 1 ];then
-	sudo apt-get install -y kubelet kubeadm kubectl > /dev/null
+	sudo apt-get install -y kubelet kubeadm kubectl 
 else
 	printf " Invalid selection\n"
 fi
@@ -96,8 +96,8 @@ sudo echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=$exipaddr\"" >> /etc/syste
 
 # Shutdown firewall
 printf " Shutdown firewall...\n"
-sudo ufw status verbose > /dev/null
-sudo ufw disable > /dev/null
+sudo ufw status verbose 
+sudo ufw disable 
 
 printf " Installation Success\n"
 # check kube version
