@@ -13,11 +13,9 @@ sudo sysctl net.bridge.bridge-nf-call-iptables=1
 #sudo echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # init pod network & set api-server address
-printf " Input master node IP Address: "
-read masterip
 printf " Input network CIDR [ex. 192.168.0.0/16]: "
 read networkcidr
-sudo kubeadm init --pod-network-cidr=$networkcidr --apiserver-advertise-address=$masterip
+sudo kubeadm init --pod-network-cidr=$networkcidr --ignore-preflight-errors=NumCPU
 
 # save config
 mkdir -p $HOME/.kube
@@ -30,7 +28,9 @@ printf " Apply flannel...\n"
 sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 # Virtual box
-printf " Apply kuberouter...\n"
-sudo kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
-sudo kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter-all-features.yaml
+#printf " Apply kuberouter...\n"
+#sudo kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
+#sudo kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter-all-features.yaml
+
+printf " Master setting complete\n"
 
