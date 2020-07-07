@@ -9,6 +9,11 @@ spec:
     listKind: ReplicaSetList
     plural: replicasets
     singular: replicaset
+    shortNames:
+      - mrcs
+      - mreplicasets
+      - mreplica
+      - mreplicaset
   scope: Namespaced
   validation:
     openAPIV3Schema:

@@ -7,6 +7,11 @@ printf "\n =====================================================================
 printf "                KETI CRD VERSION MIGRATION MANAGER INSTALL\n"
 printf "\n ======================================================================\n"
 
+# Set host name
+printf " Set hostname: "
+read hostname
+echo "$hostname" > /etc/hostname
+
 # set swap memory off
 printf " Set swap memory off...\n"
 swapoff -a

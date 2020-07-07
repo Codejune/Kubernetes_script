@@ -9,7 +9,8 @@ printf "\n =====================================================================
 
 # Regist CNI to IP table
 printf " Regist CNI to IP table...\n"
-sudo echo 1 > /proc/sys/net/ipv4/ip_forward
+sudo sysctl net.bridge.bridge-nf-call-iptables=1
+#sudo echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # init pod network & set api-server address
 printf " Input master node IP Address: "
@@ -30,6 +31,6 @@ sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Do
 
 # Virtual box
 printf " Apply kuberouter...\n"
-KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
-KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter-all-features.yaml
+sudo kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml
+sudo kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter-all-features.yaml
 
