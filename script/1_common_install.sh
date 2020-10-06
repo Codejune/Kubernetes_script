@@ -7,6 +7,9 @@ printf "\n =====================================================================
 printf "                KETI CRD VERSION MIGRATION MANAGER INSTALL\n"
 printf "\n ======================================================================\n"
 
+# Move temp directory
+cd /tmp
+
 # Set host name
 printf " Set hostname: "
 read hostname
@@ -63,6 +66,26 @@ sudo mkdir -p /etc/systemd/system/docker.service.d
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
+# CRIU installation
+#printf " Install CRIU...\n"
+#printf " Select CRIU version\n"
+#CRIU_VERSION="3.10"
+#printf " 1. $CRIU_VERSION [Recommend]\n"
+#printf " 2. Currently\n"
+#printf " > "
+#read selection
+sudo apt-get update -q 
+sudo apt install -qy --no-install-recommends build-essential pkg-config libnet-dev python-yaml libaio-dev libprotobuf-dev libprotobuf-c0-dev protobuf-c-compiler protobuf-compiler python-protobuf libnl-3-dev libcap-dev python-future
+curl -O -sSL http://download.openvz.org/criu/criu-3.13.tar.bz2
+tar xjf criu-3.13.tar.bz2 
+cd criu-3.13
+make
+cp ./criu/criu /usr/local/bin
+cd ..
+sudo rm -rf criu-*
+criu check
+
+
 # kube installation
 printf " Add google gpg key...\n"
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
@@ -73,9 +96,10 @@ EOF
 printf " Check additional package update...\n"
 sudo apt update -y
 
+K8S_VERSION="1.17.3"
 printf " Install kubernetes...\n"
 printf " Select kubernetes version\n"
-printf " 1. 1.17.3 [Recommend]\n"
+printf " 1. $K8S_VERSION [Recommend]\n"
 printf " 2. Currently\n"
 printf " > "
 read selection
